@@ -8,7 +8,6 @@ import { useSelector } from 'react-redux';
 function AppPage() {
     const [popupForm, setPopupForm] = useState(true);
     const { playername } = useSelector((state) => state.user)
-    console.log('playername from redux store', playername);
 
     return (
         <>
