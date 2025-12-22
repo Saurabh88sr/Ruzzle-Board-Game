@@ -42,8 +42,6 @@ const HomePage = () => {
         setSerialNo(serialNo + 1);
 
         setBoardData(newBoard);
-
-        // switch player
         setCurrentPlayerIndex((prev) => (prev === 0 ? 1 : 0));
 
         // auto focus next empty box (sequence)
