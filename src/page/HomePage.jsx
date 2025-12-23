@@ -1,20 +1,19 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { setScoreValue } from "../store/UserSlice";
+import { setScoreValue, setSelectedCells, setCurrentPlayerIndex } from "../store/UserSlice";
 
 const HomePage = () => {
     const dispatch = useDispatch();
-    const { playername } = useSelector((state) => state.user);
+    const { playername, currentPlayerIndex } = useSelector((state) => state.user);
 
-    // 0 => Player 1, 1 => Player 2
-    const [currentPlayerIndex, setCurrentPlayerIndex] = useState(0);
+
     const [serialNo, setSerialNo] = useState(1);
+    const [selectedCell, setSelectedCell] = useState([]);
 
     // 9x9 board (81 cells)
     const [boardData, setBoardData] = useState(Array(81).fill(null));
     const inputRefs = useRef([]);
 
-    console.log("playername in boardData boardData", boardData);
     const activePlayer = playername[currentPlayerIndex];
 
     // allow only letters
@@ -42,7 +41,9 @@ const HomePage = () => {
         setSerialNo(serialNo + 1);
 
         setBoardData(newBoard);
-        setCurrentPlayerIndex((prev) => (prev === 0 ? 1 : 0));
+        let change = currentPlayerIndex === 0 ? 1 : 0;
+        dispatch(setCurrentPlayerIndex(change));
+        // setCurrentPlayerIndex((prev) => (prev === 0 ? 1 : 0));
 
         // auto focus next empty box (sequence)
         const nextIndex = newBoard.findIndex(
@@ -66,10 +67,22 @@ const HomePage = () => {
         inputRefs.current[0]?.focus();
     }, []);
 
+
+
     const getValue = (e) => {
-        console.log('clicked value', e.target.value);
-        e.target.value = "";
+        const valuetext = e.target.value;
+        if (activePlayer?.player) {
+            setSelectedCell([...selectedCell, { playerId: activePlayer?.id, valuetext }]);
+        }
+
     }
+    useEffect(() => {
+        dispatch(setSelectedCells(selectedCell));
+    }, [selectedCell]);
+
+    useEffect(() => {
+        setSelectedCell([]);
+    }, [activePlayer]);
 
     if (playername.length < 2) {
         return (
@@ -84,15 +97,20 @@ const HomePage = () => {
     }
 
     return (
-        <div className="p-4 flex justify-center items-center bg-blue-50 h-screen">
-            <div className="bg-linear-to-r from-blue-700 to-blue-600 shadow p-8 rounded-lg">
-                <h2 className="text-white text-2xl mb-4">
-                    Ruzzle Game Board
-                </h2>
+        <div className="p-4 flex justify-center items-center bg-blue-50 sm:h-screen">
+            <div className="bg-linear-to-r from-blue-700 to-blue-600 shadow p-4 sm:p-8 rounded-lg">
+                <div className="flex justify-between">
+                    <h2 className="text-white text-2xl mb-2 ">
+                        Ruzzle Game Board
+                    </h2>
+                    <div className={`${activePlayer?.player === 1 ? "bg-yellow-300" : "bg-teal-300"} p-2 px-4 rounded mb-4 max-w-max`}>
 
-                <h3 className="text-white text-lg mb-4">
-                    Active Player: {activePlayer?.name}
-                </h3>
+                        <h3 className="text-white font-semibold">
+                            {activePlayer?.name}
+                        </h3>
+                    </div>
+                </div>
+
 
                 <div className="grid grid-cols-9 gap-1">
                     {boardData.map((cell, index) => (
@@ -109,8 +127,8 @@ const HomePage = () => {
                                 }
                             }}
                             onChange={(e) => handleChange(e, index)}
-                            onClick={(e)=>getValue(e)}
-                            className={`border-4 shadow border-white w-12 h-12 rounded text-center text-xl font-bold
+                            onClick={(e) => getValue(e)}
+                            className={`border-4 shadow border-white sm:w-12 sm:h-12 rounded text-center text-xl font-bold
                               ${cell
                                     ? cell.playerNo === 1
                                         ? "bg-yellow-300 cursor-pointer"

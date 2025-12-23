@@ -2,12 +2,16 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const scoreValue = [];
 const playername = [];
+const selectedCells = [];
+const currentPlayerIndex = 0;
 
 export const userSlice = createSlice({
   name: "counter",
   initialState: {
     scoreValue: scoreValue,
     playername: playername,
+    selectedCells: selectedCells,
+    currentPlayerIndex: currentPlayerIndex,
   },
   reducers: {
     setScoreValue: (state, action) => {
@@ -16,18 +20,11 @@ export const userSlice = createSlice({
     setPlayerName: (state, action) => {
       state.playername = action.payload;
     },
-    increment: (state) => {
-      // Redux Toolkit allows us to write "mutating" logic in reducers. It
-      // doesn't actually mutate the state because it uses the Immer library,
-      // which detects changes to a "draft state" and produces a brand new
-      // immutable state based off those changes
-      state.value += 1;
+    setSelectedCells: (state, action) => {
+      state.selectedCells = action.payload;
     },
-    decrement: (state) => {
-      state.value -= 1;
-    },
-    incrementByAmount: (state, action) => {
-      state.value += action.payload;
+    setCurrentPlayerIndex: (state, action) => {
+      state.currentPlayerIndex = action.payload;
     },
   },
 });
@@ -39,6 +36,8 @@ export const {
   incrementByAmount,
   setScoreValue,
   setPlayerName,
+  setSelectedCells,
+  setCurrentPlayerIndex,
 } = userSlice.actions;
 
 export default userSlice.reducer;

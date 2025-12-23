@@ -11,13 +11,25 @@ function AppPage() {
 
     return (
         <>
-            <div className='flex justify-between bg-slate-100'>
+            <div className="grid grid-cols-2 sm:grid-cols-8 bg-slate-100 min-h-screen">
                 {popupForm && <PlayerName setPopupForm={setPopupForm} />}
 
-                <RightPanal playername={playername[0] ||[]} />
-                <HomePage />
-                <RightPanal playername={playername[1] || []} />
+                {/* HomePage - Top on mobile, center on sm+ */}
+                <div className="order-1 sm:order-2 col-span-2 sm:col-span-4">
+                    <HomePage />
+                </div>
+
+                {/* Right Panel - Player 1 */}
+                <div className="order-2 sm:order-1 sm:col-span-2">
+                    <RightPanal playername={playername[0] || {}} />
+                </div>
+
+                {/* Right Panel - Player 2 */}
+                <div className="order-3 sm:order-3 sm:col-span-2">
+                    <RightPanal playername={playername[1] || {}} />
+                </div>
             </div>
+
         </>
     )
 }
