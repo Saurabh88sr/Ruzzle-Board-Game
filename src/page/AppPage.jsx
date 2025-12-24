@@ -4,6 +4,7 @@ import PlayerName from '../component/PlayerName'
 import RightPanal from '../component/RightPanal'
 import HomePage from '../page/HomePage'
 import { useSelector } from 'react-redux';
+import LeftPanal from '../component/LeftPanal';
 
 function AppPage() {
     const [popupForm, setPopupForm] = useState(true);
@@ -24,10 +25,9 @@ function AppPage() {
                     <RightPanal playername={playername[0] || {}} />
                 </div>
 
-                {/* Right Panel - Player 2 */}
                 <div className="order-3 sm:order-3 sm:col-span-2">
-                    <RightPanal playername={playername[1] || {}} />
-                </div>
+                    <LeftPanal playername={playername[1] || {}} />
+                </div> 
             </div>
 
         </>

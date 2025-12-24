@@ -1,12 +1,15 @@
 import { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { setScoreValue, setSelectedCells, setCurrentPlayerIndex } from "../store/UserSlice";
+import socket from "../socket";
 
 const HomePage = () => {
     const dispatch = useDispatch();
     const { playername, currentPlayerIndex } = useSelector((state) => state.user);
 
+    const [playerids, setPlayerids] = useState([]);
 
+    console.log("HomePage playerids:", playerids);
     const [serialNo, setSerialNo] = useState(1);
     const [selectedCell, setSelectedCell] = useState([]);
 
@@ -14,7 +17,7 @@ const HomePage = () => {
     const [boardData, setBoardData] = useState(Array(81).fill(null));
     const inputRefs = useRef([]);
 
-    const activePlayer = playername[currentPlayerIndex];
+    const activePlayer = playerids[currentPlayerIndex];
 
     // allow only letters
     const isValidLetter = (key) => /^[a-zA-Z]$/.test(key);
@@ -34,9 +37,9 @@ const HomePage = () => {
             sno: serialNo,
             index,
             value,
-            playerId: activePlayer?.id ?? currentPlayerIndex + 1,
+            playerId: activePlayer?.socketId ?? currentPlayerIndex + 1,
             playerName: activePlayer?.name,
-            playerNo: activePlayer?.player,
+            playerNo: activePlayer?.self ? 1 : 2,
         };
         setSerialNo(serialNo + 1);
 
@@ -84,7 +87,19 @@ const HomePage = () => {
         setSelectedCell([]);
     }, [activePlayer]);
 
-    if (playername.length < 2) {
+    // ------------ Render Board ------------
+    useEffect(() => {
+        socket.on("room_joined", (data) => {
+            console.log("Joined room home page:", data.players);
+            setPlayerids(data.players);
+
+        });
+        console.log("useEffect room_joined called");
+
+        return () => socket.off("room_joined");
+    }, []);
+
+    if (playerids.length < 2) {
         return (
             <div className="p-4 flex justify-center items-center bg-blue-50 h-screen">
                 <div className="bg-linear-to-r from-blue-700 to-blue-600 shadow p-8 rounded-lg">
@@ -95,6 +110,8 @@ const HomePage = () => {
             </div>
         );
     }
+
+
 
     return (
         <div className="p-4 flex justify-center items-center bg-blue-50 sm:h-screen">
