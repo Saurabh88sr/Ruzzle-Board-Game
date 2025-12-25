@@ -1,108 +1,96 @@
 import { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setScoreValue, setSelectedCells, setCurrentPlayerIndex } from "../store/UserSlice";
 import socket from "../socket";
 
 const HomePage = () => {
-    const dispatch = useDispatch();
-    const { playername, currentPlayerIndex } = useSelector((state) => state.user);
-
-    const [playerids, setPlayerids] = useState([]);
-
-    console.log("HomePage playerids:", playerids);
-    const [serialNo, setSerialNo] = useState(1);
-    const [selectedCell, setSelectedCell] = useState([]);
-
-    // 9x9 board (81 cells)
+    const [roomId, setRoomId] = useState(null);
+    const [game, setGame] = useState(null);
+    console.log("HomePage game data:", game);
     const [boardData, setBoardData] = useState(Array(81).fill(null));
+    const [isPlayerTurn, setIsPlayerTurn] = useState(false);
+    const [selectedCells, setSelectedCells] = useState([]);
+
     const inputRefs = useRef([]);
 
-    const activePlayer = playerids[currentPlayerIndex];
+    /* ---------------- GAME REQUEST ---------------- */
+    useEffect(() => {
+        socket.on("game_request", ({ from, name }) => {
+            if (window.confirm(`Play with ${name}?`)) {
+                socket.emit("accept_request", { from });
+            }
+        });
 
-    // allow only letters
-    const isValidLetter = (key) => /^[a-zA-Z]$/.test(key);
+        return () => socket.off("game_request");
+    }, []);
 
+    /* ---------------- GAME START & UPDATE ---------------- */
+    useEffect(() => {
+        socket.on("game_start", ({ roomId, game }) => {
+            setRoomId(roomId);
+            setGame(game);
+            setBoardData(game.board);
+            setIsPlayerTurn(game.turn === socket.id);
+            setSelectedCells([]);
+        });
 
-    const handleChange = (e, index) => {
-        const value = e.target.value.toUpperCase();
+        socket.on("game_update", (game) => {
+            setGame(game);
+            setBoardData(game.board);
+            setIsPlayerTurn(game.turn === socket.id);
+            setSelectedCells([]); // clear selection on turn change
+        });
 
-        // allow only letters
-        if (!/^[A-Z]$/.test(value)) return;
+        return () => {
+            socket.off("game_start");
+            socket.off("game_update");
+        };
+    }, []);
+
+    /* ---------------- AUTO FOCUS NEXT EMPTY CELL ---------------- */
+    useEffect(() => {
+        const nextIndex = boardData.findIndex((cell) => !cell);
+        if (nextIndex !== -1) {
+            inputRefs.current[nextIndex]?.focus();
+        }
+    }, [boardData]);
+
+    /* ---------------- VALID LETTER ---------------- */
+    const isValidLetter = (key) => /^[A-Z]$/.test(key);
+
+    /* ---------------- MAKE MOVE ---------------- */
+    const handleKeyDown = (e, index) => {
+        if (!isPlayerTurn) return;
+
+        const key = e.key.toUpperCase();
+
+        // allow only A-Z
+        if (!/^[A-Z]$/.test(key)) return;
 
         // prevent overwrite
         if (boardData[index]) return;
 
-        const newBoard = [...boardData];
-        newBoard[index] = {
-            sno: serialNo,
+        socket.emit("make_move", {
+            roomId,
             index,
-            value,
-            playerId: activePlayer?.socketId ?? currentPlayerIndex + 1,
-            playerName: activePlayer?.name,
-            playerNo: activePlayer?.self ? 1 : 2,
-        };
-        setSerialNo(serialNo + 1);
+            value: key,
+        });
+    };
+    console.log("boardData boardData:", boardData);
 
-        setBoardData(newBoard);
-        let change = currentPlayerIndex === 0 ? 1 : 0;
-        dispatch(setCurrentPlayerIndex(change));
-        // setCurrentPlayerIndex((prev) => (prev === 0 ? 1 : 0));
+    /* ---------------- SELECT CELL (FOR WORD FORMING) ---------------- */
+    const handleCellSelect = (index) => {
+        if (!boardData[index]) return;
+        if (!isPlayerTurn) return;
 
-        // auto focus next empty box (sequence)
-        const nextIndex = newBoard.findIndex(
-            (cell, i) => !cell && i > index
+        setSelectedCells((prev) =>
+            prev.includes(index) ? prev : [...prev, index]
         );
-
-        if (nextIndex !== -1) {
-            setTimeout(() => {
-                inputRefs.current[nextIndex]?.focus();
-            }, 0);
-        }
     };
 
-    useEffect(() => {
-        // send filled cells to redux
-        dispatch(setScoreValue(boardData.filter(Boolean)));
-    }, [boardData, dispatch]);
-
-    // focus first box on load
-    useEffect(() => {
-        inputRefs.current[0]?.focus();
-    }, []);
-
-
-
-    const getValue = (e) => {
-        const valuetext = e.target.value;
-        if (activePlayer?.player) {
-            setSelectedCell([...selectedCell, { playerId: activePlayer?.id, valuetext }]);
-        }
-
-    }
-    useEffect(() => {
-        dispatch(setSelectedCells(selectedCell));
-    }, [selectedCell]);
-
-    useEffect(() => {
-        setSelectedCell([]);
-    }, [activePlayer]);
-
-    // ------------ Render Board ------------
-    useEffect(() => {
-        socket.on("room_joined", (data) => {
-            console.log("Joined room home page:", data.players);
-            setPlayerids(data.players);
-
-        });
-        console.log("useEffect room_joined called");
-
-        return () => socket.off("room_joined");
-    }, []);
-
-    if (playerids.length < 2) {
+    /* ---------------- WAITING SCREEN ---------------- */
+    if (!roomId) {
         return (
             <div className="p-4 flex justify-center items-center bg-blue-50 h-screen">
-                <div className="bg-linear-to-r from-blue-700 to-blue-600 shadow p-8 rounded-lg">
+                <div className="bg-blue-600 shadow p-8 rounded-lg">
                     <h2 className="text-white text-2xl">
                         Waiting for players to join...
                     </h2>
@@ -111,23 +99,19 @@ const HomePage = () => {
         );
     }
 
-
-
+    /* ---------------- GAME BOARD ---------------- */
     return (
         <div className="p-4 flex justify-center items-center bg-blue-50 sm:h-screen">
-            <div className="bg-linear-to-r from-blue-700 to-blue-600 shadow p-4 sm:p-8 rounded-lg">
-                <div className="flex justify-between">
-                    <h2 className="text-white text-2xl mb-2 ">
-                        Ruzzle Game Board
-                    </h2>
-                    <div className={`${activePlayer?.player === 1 ? "bg-yellow-300" : "bg-teal-300"} p-2 px-4 rounded mb-4 max-w-max`}>
-
-                        <h3 className="text-white font-semibold">
-                            {activePlayer?.name}
-                        </h3>
+            <div className="bg-blue-600 shadow p-4 sm:p-8 rounded-lg">
+                <div className="flex justify-between mb-4">
+                    <h2 className="text-white text-2xl">Ruzzle Game Board</h2>
+                    <div
+                        className={`px-4 py-2 rounded text-white font-semibold ${isPlayerTurn ? "bg-green-500" : "bg-red-500"
+                            }`}
+                    >
+                        {isPlayerTurn ? "Your Turn" : "Opponent Turn"}
                     </div>
                 </div>
-
 
                 <div className="grid grid-cols-9 gap-1">
                     {boardData.map((cell, index) => (
@@ -135,27 +119,31 @@ const HomePage = () => {
                             key={index}
                             ref={(el) => (inputRefs.current[index] = el)}
                             type="text"
-                            maxLength={1}
-                            value={cell ? cell.value : ""}
-                            readOnly={!!cell}
-                            onKeyDown={(e) => {
-                                if (!isValidLetter(e.key) && e.key !== "Backspace") {
-                                    e.preventDefault();
-                                }
-                            }}
-                            onChange={(e) => handleChange(e, index)}
-                            onClick={(e) => getValue(e)}
-                            className={`border-4 shadow border-white sm:w-12 sm:h-12 rounded text-center text-xl font-bold
-                              ${cell
+                            value={cell?.value || ""}
+                            readOnly
+                            onKeyDown={(e) => handleKeyDown(e, index)}
+                            onClick={() => handleCellSelect(index)}
+                            className={`
+                                        border-4 border-white shadow
+                                        w-10 h-10 sm:w-12 sm:h-12
+                                        rounded text-center text-xl font-bold
+                                        
+                                        ${cell
                                     ? cell.playerNo === 1
-                                        ? "bg-yellow-300 cursor-pointer"
-                                        : "bg-teal-300 cursor-pointer"
-                                    : "bg-white"
-                                } 
-                              focus:outline-blue-400`}
+                                        ? "bg-yellow-300"
+                                        : "bg-teal-300 "
+                                    : "bg-white"}
+                                       ${selectedCells.includes(index)
+                                    ? "ring-4 ring-red-500"
+                                    : ""}
+                                    ${cell?.value ? "cursor-pointer" : ""}
+                                    ${isPlayerTurn ? "cursor-pointer" : "cursor-not-allowed"}
+                                            focus:outline-none
+                                        `}
                         />
                     ))}
                 </div>
+
             </div>
         </div>
     );

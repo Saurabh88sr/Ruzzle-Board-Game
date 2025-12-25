@@ -26,6 +26,7 @@ const LeftPanal = () => {
 
   const onceRoomJoined =(id)=>{
     socket.emit("create_room", { targetSocketId: id });
+    // socket.emit("send_request", id)
     console.log("Creating room with:", id);
     setUpdate(!update);    
   };
