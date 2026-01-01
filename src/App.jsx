@@ -1,19 +1,19 @@
 import React from 'react'
 import './App.css'
 import AppPage from './page/AppPage'
-import { io } from "socket.io-client";
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import LandingPage from './page/LandingPage';
 
-const socket = io("http://localhost:5000");
 
 const App = () => {
-  socket.emit("connection", "connected");
-  socket.on("connect", () => {
-  console.log("Socket ID:", socket.id,);
-});
-
   return (
     <>
-    <AppPage/>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/ruzzle" element={<AppPage />} />
+        </Routes>
+      </Router>
     </>
   )
 }

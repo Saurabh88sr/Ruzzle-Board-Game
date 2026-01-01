@@ -8,11 +8,10 @@ import LeftPanal from '../component/LeftPanal';
 
 function AppPage() {
     const [popupForm, setPopupForm] = useState(true);
-    const { playername } = useSelector((state) => state.user)
 
     return (
         <>
-            <div className="grid grid-cols-2 sm:grid-cols-8 bg-slate-100 min-h-screen">
+            <div className="grid grid-cols-2 md:grid-cols-8 bg-slate-100 md:min-h-screen">
                 {popupForm && <PlayerName setPopupForm={setPopupForm} />}
 
                 {/* HomePage - Top on mobile, center on sm+ */}
@@ -22,11 +21,11 @@ function AppPage() {
 
                 {/* Right Panel - Player 1 */}
                 <div className="order-2 sm:order-1 sm:col-span-2">
-                    <RightPanal playername={playername[0] || {}} />
+                    <RightPanal/>
                 </div>
 
                 <div className="order-3 sm:order-3 sm:col-span-2">
-                    <LeftPanal playername={playername[1] || {}} />
+                    <LeftPanal />
                 </div> 
             </div>
 

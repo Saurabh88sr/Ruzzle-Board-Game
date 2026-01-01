@@ -4,6 +4,9 @@ const scoreValue = [];
 const playername = [];
 const selectedCells = [];
 const currentPlayerIndex = 0;
+const roomId = null;
+const lastMove = [];
+const moves = [];
 
 export const userSlice = createSlice({
   name: "counter",
@@ -12,6 +15,9 @@ export const userSlice = createSlice({
     playername: playername,
     selectedCells: selectedCells,
     currentPlayerIndex: currentPlayerIndex,
+    roomId: roomId,
+    lastMove: lastMove,
+    moves: moves,
   },
   reducers: {
     setScoreValue: (state, action) => {
@@ -26,6 +32,15 @@ export const userSlice = createSlice({
     setCurrentPlayerIndex: (state, action) => {
       state.currentPlayerIndex = action.payload;
     },
+    setRoomId: (state, action) => {
+      state.roomId = action.payload;
+    },
+    setLasrtMove: (state, action) => {
+      state.lastMove = action.payload;
+    },
+    setMoves: (state, action) => {
+      state.moves = action.payload;
+    },
   },
 });
 
@@ -38,6 +53,9 @@ export const {
   setPlayerName,
   setSelectedCells,
   setCurrentPlayerIndex,
+  setRoomId,
+  setLasrtMove,
+  setMoves,
 } = userSlice.actions;
 
 export default userSlice.reducer;
