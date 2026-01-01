@@ -279,7 +279,7 @@ const HomePage = () => {
                                         : ""}
                                     
                                     text-black dark:text-white
-                                    ${isPlayerTurn ? "cursor-pointer" : "cursor-not-allowed"}
+                                    ${isPlayerTurn ? "cursor-pointer" : "cursor-auto"}
                                     focus:outline-none
                                 `}
                             />

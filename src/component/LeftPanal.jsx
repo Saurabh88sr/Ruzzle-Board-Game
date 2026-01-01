@@ -20,11 +20,7 @@ const LeftPanel = () => {
   }, []);
 
   /* ---------------- GAME REQUEST ---------------- */
-  const handleRequest = ({ from, name }) => {
-    if (window.confirm(`Play with ${name}?`)) {
-      socket.emit("accept_request", { from });
-    }
-  };
+
 
   useEffect(() => {
     socket.on("game_request", handleRequest);
@@ -33,6 +29,12 @@ const LeftPanel = () => {
       socket.off("game_request", handleRequest);
     };
   }, []);
+
+    const handleRequest = ({ from, name }) => {
+    if (window.confirm(`Play with ${name}?`)) {
+      socket.emit("accept_request", { from });
+    }
+  };
 
 
   /* ---------------- SCORE UPDATE ---------------- */
@@ -64,7 +66,7 @@ const LeftPanel = () => {
 
   const createRoom = (id) => {
     socket.emit("create_room", { targetSocketId: id });
-    console.log("Sent create_room to", id);
+    // console.log("Sent create_room to", id);
   }
 
 

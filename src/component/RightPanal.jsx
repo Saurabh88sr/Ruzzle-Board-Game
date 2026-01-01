@@ -14,6 +14,7 @@ const RightPanal = ({ playername }) => {
   const [myProfile, setMyProfile] = useState(null);
   const EMOJIS = ["😀", "😂", "🔥", "😮", "😡", "👏", "💀"];
   const [reactions, setReactions] = useState([]);
+  const [rules, setRules] = useState(false);
 
   console.log("reactions", reactions)
 
@@ -68,6 +69,9 @@ const RightPanal = ({ playername }) => {
     return () => socket.off("reaction", handleReaction);
   }, []);
 
+  const ruleregulation = () => {
+
+  }
 
 
 
@@ -85,7 +89,7 @@ const RightPanal = ({ playername }) => {
   "
     >
 
-      <div className="">
+      <div className="flex justify-between items-center mb-4">
         <Link to="/">
           <div className="flex items-center gap-2">
             <div className="bg-indigo-600 p-2 rounded-lg">
@@ -98,6 +102,9 @@ const RightPanal = ({ playername }) => {
           </div>
 
         </Link>
+         <div>
+        <button onClick={() => setRules(!rules)} className="bg-blue-500 text-white px-4 py-2 font-bold rounded-lg hover:bg-blue-600 transition">Rules</button>
+      </div>
       </div>
 
       {/* PROFILE */}
@@ -143,9 +150,64 @@ const RightPanal = ({ playername }) => {
             ))}
           </div>
         </div>
-
-
       </div>
+
+
+      {rules && ( <div className="bg-slate-800 text-slate-200 p-4 rounded-lg text-sm space-y-3">
+        <h3 className="text-lg font-bold text-white border-b border-slate-600 pb-2">
+          Game Rules
+        </h3>
+
+        <div>
+          <h4 className="font-semibold text-indigo-400">🎯 Objective</h4>
+          <p>
+            Form valid English words on the 9×9 board and score higher than your opponent.
+          </p>
+        </div>
+
+        <div>
+          <h4 className="font-semibold text-indigo-400">🖱️ Word Selection</h4>
+          <ul className="list-disc list-inside space-y-1">
+            <li>Select any empty cell to start.</li>
+            <li>
+              Once the first cell is selected, your path must follow
+              <strong> one continuous direction</strong>.
+            </li>
+            <li>Each cell can be used only once per word.</li>
+          </ul>
+
+          <div className="mt-2">
+            <p className="font-semibold text-slate-300">Allowed Directions</p>
+            <p className="mt-1">
+              <span className="font-semibold">Standard:</span> ⬆️ ⬇️ ⬅️ ➡️
+            </p>
+            <p>
+              <span className="font-semibold">Diagonal:</span> ↖️ ↗️ ↘️ ↙️
+            </p>
+          </div>
+        </div>
+
+        <div>
+          <h4 className="font-semibold text-indigo-400">✅ Submit Word</h4>
+          <ul className="list-disc list-inside space-y-1">
+            <li>Select letters to form a word.</li>
+            <li>Click <strong>SPELL</strong> to submit.</li>
+            <li>Duplicate words are not allowed.</li>
+          </ul>
+        </div>
+
+        <div>
+          <h4 className="font-semibold text-indigo-400">🏆 Scoring</h4>
+          <ul className="list-disc list-inside space-y-1">
+            <li>1 letter = 1 point.</li>
+            <li>Invalid words score 0.</li>
+          </ul>
+        </div>
+        <div>
+          <h4 className="font-semibold text-red-400">🚪 Leave Game</h4>
+          <p>Use the <strong>Leave Game</strong> button to exit anytime.</p>
+        </div>
+      </div>)}
     </div>
 
   );
