@@ -50,7 +50,6 @@ const RightPanal = ({ playername }) => {
     });
   };
 
-
   useEffect(() => {
     const handleReaction = (reaction) => {
       // add reaction
@@ -68,13 +67,8 @@ const RightPanal = ({ playername }) => {
 
     return () => socket.off("reaction", handleReaction);
   }, []);
-
   const ruleregulation = () => {
-
   }
-
-
-
   return (
     <div
       className="
@@ -129,6 +123,7 @@ const RightPanal = ({ playername }) => {
         )}
       </div>
 
+
       <div className="bg-white p-2 rounded-2xl">
         <div className="flex gap-2 justify-center">
           {EMOJIS.map((emoji) => (
@@ -152,7 +147,6 @@ const RightPanal = ({ playername }) => {
         </div>
       </div>
 
-
       {rules && ( <div className="bg-slate-800 text-slate-200 p-4 rounded-lg text-sm space-y-3">
         <h3 className="text-lg font-bold text-white border-b border-slate-600 pb-2">
           Game Rules
@@ -161,7 +155,7 @@ const RightPanal = ({ playername }) => {
         <div>
           <h4 className="font-semibold text-indigo-400">🎯 Objective</h4>
           <p>
-            Form valid English words on the 9×9 board and score higher than your opponent.
+            Form valid English words on the 9X9 board and score higher than your opponent.
           </p>
         </div>
 

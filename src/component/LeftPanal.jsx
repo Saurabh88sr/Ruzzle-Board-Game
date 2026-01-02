@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import socket from "../socket";
 import { setRoomId, setLasrtMove, setMoves } from "../store/UserSlice";
+import GameButton from "./GameButton";
 
 const LeftPanel = () => {
   const dispatch = useDispatch();
@@ -10,6 +11,7 @@ const LeftPanel = () => {
   const [playersOnline, setPlayersOnline] = useState([]);
   // const [moves, setMoves] = useState([]);
   const [totals, setTotals] = useState({});
+  const [requestAccepted, setRequestAccepted] = useState(null);
 
   /* ---------------- ONLINE PLAYERS ---------------- */
   useEffect(() => {
@@ -21,20 +23,29 @@ const LeftPanel = () => {
 
   /* ---------------- GAME REQUEST ---------------- */
 
+  const acceptRequest = () => {
+    if (!requestAccepted) return;
+
+    socket.emit("accept_request", {
+      from: requestAccepted.from,
+    });
+
+    setRequestAccepted(null);
+  };
 
   useEffect(() => {
-    socket.on("game_request", handleRequest);
+    const handleGameRequest = (data) => {
+      console.log("Game request received:", data);
+      setRequestAccepted(data);
+    };
+
+    socket.on("game_request", handleGameRequest);
 
     return () => {
-      socket.off("game_request", handleRequest);
+      socket.off("game_request", handleGameRequest);
     };
   }, []);
 
-    const handleRequest = ({ from, name }) => {
-    if (window.confirm(`Play with ${name}?`)) {
-      socket.emit("accept_request", { from });
-    }
-  };
 
 
   /* ---------------- SCORE UPDATE ---------------- */
@@ -120,6 +131,21 @@ const LeftPanel = () => {
           transition-colors duration-300
         "
       >
+        {requestAccepted && (
+          <div className="fixed top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+          bg-white text-black p-6 rounded-xl shadow-lg z-50
+          dark:bg-slate-800 dark:text-white
+          ">
+            <p className="text-xl p-2 font-bold text-blue-700">Save the words with {requestAccepted.name}</p>
+            <div className="flex justify-center gap-2">
+
+             <GameButton color={'blue'} onClick={acceptRequest} text="Accept" />
+             <GameButton color={'red'} onClick={() => setRequestAccepted(null)} text="Reject" />
+            </div>
+          </div>
+        )}
+
+
         {/* 🚪 LEAVE GAME */}
         {roomId && (
           <button

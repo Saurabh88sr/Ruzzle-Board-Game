@@ -236,7 +236,7 @@ const HomePage = () => {
 
                     {/* BUTTON + TURN */}
                     <div className="flex justify-between items-center mb-4 gap-2">
-                        <GameButton onClick={() => spellCheck(joinletter)} text="Spell" />
+                        <GameButton color={'blue'} onClick={() => spellCheck(joinletter)} text="Spell" />
 
                         <div
                             className={`px-4 py-2 rounded-xl text-white font-semibold shadow
