@@ -1,6 +1,6 @@
 import { io } from "socket.io-client";
 
-const socket = io("https://ruzzlebackend-production.up.railway.app", {
+const socket = io("https://ruzzle-backend.onrender.com/ ", {
   autoConnect: true,
 });
 
