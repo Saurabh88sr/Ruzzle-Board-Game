@@ -10,8 +10,8 @@ const App = () => {
     <>
       <Router>
         <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/ruzzle" element={<AppPage />} />
+          <Route path="/ruzzle" element={<LandingPage />} />
+          <Route path="/" element={<AppPage />} />
         </Routes>
       </Router>
     </>
