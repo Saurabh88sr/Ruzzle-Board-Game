@@ -1,9 +1,7 @@
 import { io } from "socket.io-client";
 
-// Hardcode it temporarily to verify the connection
-const URL = "https://ruzzle-backend.onrender.com"; 
-
-const socket = io(URL, {
+// No if/else logic—just force the live URL
+const socket = io("https://ruzzle-backend.onrender.com", {
   withCredentials: true,
   transports: ["polling", "websocket"],
 });
