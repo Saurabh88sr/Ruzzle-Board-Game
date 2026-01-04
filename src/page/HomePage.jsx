@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import socket from "../socket";
+import socket from "../socket.js";
 import { useDispatch, useSelector } from "react-redux";
 import { setRoomId, } from "../store/UserSlice";
 import GameButton from "../component/GameButton.jsx";

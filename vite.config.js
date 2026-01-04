@@ -6,8 +6,8 @@ import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   darkMode: "class",
-  server: {
-    host: true,
-    port: 4000,
-  },
+  // server: {
+  //   host: true,
+  //   port: 4000,
+  // },
 });
