@@ -1,8 +1,7 @@
 import { io } from "socket.io-client";
 
-const URL = process.env.NODE_ENV === "production" 
-  ? "https://ruzzle-backend.onrender.com" 
-  : "http://localhost:5000";
+// This ensures that if the env variable exists, it uses it; otherwise defaults to local
+const URL = import.meta.env.VITE_BACKEND_URL || "http://localhost:5000";
 
 const socket = io(URL, {
   withCredentials: true,
