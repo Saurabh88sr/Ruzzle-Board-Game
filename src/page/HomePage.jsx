@@ -20,8 +20,6 @@ const HomePage = () => {
 
     const inputRefs = useRef([]);
 
-
-
     /* ---------------- GAME START & UPDATE ---------------- */
     useEffect(() => {
         socket.on("game_start", ({ roomId, game }) => {
@@ -71,6 +69,19 @@ const HomePage = () => {
             value: key,
         });
     };
+    const handleInput = (e, index) => {
+        const value = e.target.value.toUpperCase();
+
+        if (!/^[A-Z]?$/.test(value)) return;
+
+        updateCellValue(index, value);
+
+        // move to next cell (mobile safe)
+        setTimeout(() => {
+            inputRefs.current[index + 1]?.focus();
+        }, 0);
+    };
+
 
     // fuction to handle cell selection for word forming
     const getDirection = (from, to) => {
@@ -90,7 +101,7 @@ const HomePage = () => {
     /* ---------------- SELECT CELL (FOR WORD FORMING) ---------------- */
     const handleCellSelect = (index) => {
 
-        if (lastMove.playerId === socket.id && !isPlayerTurn) return; // prevent selection if last move was by this player
+        // if (lastMove.playerId === socket.id && !isPlayerTurn) return; // prevent selection if last move was by this player
         if (!boardData[index]) return;
         if (isPlayerTurn) return;
 
@@ -240,10 +251,10 @@ const HomePage = () => {
 
                         <div
                             className={`px-4 py-2 rounded-xl text-white font-semibold shadow
-          ${isPlayerTurn
+                           ${isPlayerTurn
                                     ? "bg-green-500 dark:bg-green-600"
                                     : "bg-red-500 dark:bg-red-600"}
-        `}
+                                  `}
                         >
                             {isPlayerTurn ? "Your Turn" : "Opponent Turn"}
                         </div>
@@ -257,7 +268,7 @@ const HomePage = () => {
                                 ref={(el) => (inputRefs.current[index] = el)}
                                 type="text"
                                 value={cell?.value || ""}
-                                
+                                onChange={(e) => handleInput(e, index)}
                                 onKeyDown={(e) => handleKeyDown(e, index)}
                                 onClick={() => handleCellSelect(index)}
                                 className={`
