@@ -7,9 +7,9 @@ import GameButton from "../component/GameButton.jsx";
 const HomePage = () => {
     const dispatch = useDispatch();
     const { roomId, lastMove, moves } = useSelector((state) => state.user);
-    console.log("H from moves:", moves);
+    // console.log("H from moves:", moves);
     const [game, setGame] = useState(null);
-    console.log("HomePage game data:", game);
+    // console.log("HomePage game data:", game);
     const [boardData, setBoardData] = useState(Array(81).fill(null));
     const [isPlayerTurn, setIsPlayerTurn] = useState(false);
     const [selectedCells, setSelectedCells] = useState([]);

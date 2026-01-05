@@ -96,9 +96,9 @@ const RightPanal = ({ playername }) => {
           </div>
 
         </Link>
-         <div>
-        <button onClick={() => setRules(!rules)} className="bg-blue-500 text-white px-4 py-2 font-bold rounded-lg hover:bg-blue-600 transition">Rules</button>
-      </div>
+        <div>
+          <button onClick={() => setRules(!rules)} className="bg-blue-500 text-white px-4 py-2 font-bold rounded-lg hover:bg-blue-600 transition">Rules</button>
+        </div>
       </div>
 
       {/* PROFILE */}
@@ -147,61 +147,55 @@ const RightPanal = ({ playername }) => {
         </div>
       </div>
 
-      {rules && ( <div className="bg-slate-800 text-slate-200 p-4 rounded-lg text-sm space-y-3">
-        <h3 className="text-lg font-bold text-white border-b border-slate-600 pb-2">
-          Game Rules
-        </h3>
+      {rules && (
+        <div className="bg-linear-to-br from-slate-900 to-slate-800 
+                  text-slate-200 p-4 rounded-2xl text-sm 
+                  border border-slate-700 shadow-lg max-w-md">
 
-        <div>
-          <h4 className="font-semibold text-indigo-400">🎯 Objective</h4>
-          <p>
-            Form valid English words on the 9X9 board and score higher than your opponent.
-          </p>
-        </div>
+          <h3 className="text-lg font-bold text-white text-center mb-3">
+            🎮 Game Rules
+          </h3>
 
-        <div>
-          <h4 className="font-semibold text-indigo-400">🖱️ Word Selection</h4>
-          <ul className="list-disc list-inside space-y-1">
-            <li>Select any empty cell to start.</li>
-            <li>
-              Once the first cell is selected, your path must follow
-              <strong> one continuous direction</strong>.
-            </li>
-            <li>Each cell can be used only once per word.</li>
-          </ul>
-
-          <div className="mt-2">
-            <p className="font-semibold text-slate-300">Allowed Directions</p>
-            <p className="mt-1">
-              <span className="font-semibold">Standard:</span> ⬆️ ⬇️ ⬅️ ➡️
-            </p>
+          {/* Direction Rule */}
+          <div className="bg-slate-700/50 rounded-xl p-3 mb-3">
+            <h4 className="font-semibold text-indigo-400 mb-1">
+              🔀 Selection Direction
+            </h4>
             <p>
-              <span className="font-semibold">Diagonal:</span> ↖️ ↗️ ↘️ ↙️
+              Select letters in <strong>one continuous direction</strong> only.
+              Once you choose a direction, you cannot change it mid-selection.
+            </p>
+            <p className="mt-1 text-slate-300 text-xs">
+              ⬆️ ⬇️ ⬅️ ➡️ ↖️ ↗️ ↘️ ↙️
             </p>
           </div>
-        </div>
 
-        <div>
-          <h4 className="font-semibold text-indigo-400">✅ Submit Word</h4>
-          <ul className="list-disc list-inside space-y-1">
-            <li>Select letters to form a word.</li>
-            <li>Click <strong>SPELL</strong> to submit.</li>
-            <li>Duplicate words are not allowed.</li>
-          </ul>
-        </div>
+          {/* Turn Rule */}
+          <div className="bg-slate-700/50 rounded-xl p-3 mb-3">
+            <h4 className="font-semibold text-indigo-400 mb-1">
+              ⏳ Turn Based
+            </h4>
+            <p>
+              You can create a word <strong>only on Opponent turn</strong>.
+            </p>
+          </div>
 
-        <div>
-          <h4 className="font-semibold text-indigo-400">🏆 Scoring</h4>
-          <ul className="list-disc list-inside space-y-1">
-            <li>1 letter = 1 point.</li>
-            <li>Invalid words score 0.</li>
-          </ul>
+          {/* Scoring Rule */}
+          <div className="bg-slate-700/50 rounded-xl p-3">
+            <h4 className="font-semibold text-indigo-400 mb-1">
+              🏆 Score Calculation
+            </h4>
+            <p>
+              Each letter = <strong>1 point</strong>
+            </p>
+            <p className="text-xs text-slate-300">
+              Invalid words give 0 points
+            </p>
+          </div>
+
         </div>
-        <div>
-          <h4 className="font-semibold text-red-400">🚪 Leave Game</h4>
-          <p>Use the <strong>Leave Game</strong> button to exit anytime.</p>
-        </div>
-      </div>)}
+      )}
+
     </div>
 
   );
