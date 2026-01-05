@@ -176,7 +176,7 @@ const RightPanal = ({ playername }) => {
               ⏳ Turn Based
             </h4>
             <p>
-              You can create a word <strong>only on Opponent turn</strong>.
+              You can create a word <strong>only on Opponent turn</strong> after you fill the selected cell.
             </p>
           </div>
 

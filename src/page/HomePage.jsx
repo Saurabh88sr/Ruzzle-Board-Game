@@ -14,6 +14,7 @@ const HomePage = () => {
     const [isPlayerTurn, setIsPlayerTurn] = useState(false);
     const [selectedCells, setSelectedCells] = useState([]);
 
+    console.log("Selected Cells in HomePage:", selectedCells);
     // for selection of word direction 
     // const [selectedCells, setSelectedCells] = useState([]);
     const [direction, setDirection] = useState(null);
@@ -54,6 +55,8 @@ const HomePage = () => {
     /* ---------------- MAKE MOVE ---------------- */
     const handleKeyDown = (e, index) => {
         if (!isPlayerTurn) return;
+        if (isPlayerTurn && selectedCells.length > 0) return;
+
 
         if (e.key === "Backspace") {
             socket.emit("make_move", {
@@ -78,6 +81,8 @@ const HomePage = () => {
 
     const handleInput = (e, index) => {
         if (!isPlayerTurn) return;
+        if (isPlayerTurn && selectedCells.length > 0) return;
+
 
         const value = e.target.value.toUpperCase();
 
@@ -117,43 +122,56 @@ const HomePage = () => {
 
 
     /* ---------------- SELECT CELL (FOR WORD FORMING) ---------------- */
-    const handleCellSelect = (index) => {
+    const handleCellSelect = (index, e) => {
+        e?.preventDefault(); // 🔥 stop mobile ghost clicks
 
-        // if (lastMove.playerId === socket.id && !isPlayerTurn) return; // prevent selection if last move was by this player
+        // cannot select empty cell
         if (!boardData[index]) return;
+
+        // only allow selection when NOT your turn
         if (isPlayerTurn) return;
 
-         inputRefs.current[index]?.focus();
-         
-        const current = getRowCol(index);
+        setSelectedCells((prev) => {
+            // 🔒 block duplicate selection
+            if (prev.includes(index)) return prev;
 
-        // first cell
-        if (selectedCells.length === 0) {
-            setSelectedCells([index]);
-            setDirection(null);
-            return;
-        }
-        const lastIndex = selectedCells[selectedCells.length - 1];
-        const last = getRowCol(lastIndex);
+            const current = getRowCol(index);
 
-        const newDirection = getDirection(last, current);
-        if (!newDirection) return;
+            // first cell
+            if (prev.length === 0) {
+                setDirection(null);
+                inputRefs.current[index]?.focus();
+                return [index];
+            }
 
-        // second cell → lock direction
-        if (selectedCells.length === 1) {
-            setDirection(newDirection);
-            setSelectedCells([...selectedCells, index]);
-            return;
-        }
+            const lastIndex = prev[prev.length - 1];
+            const last = getRowCol(lastIndex);
 
-        // later cells → must follow same direction
-        if (newDirection !== direction) return;
+            const newDirection = getDirection(last, current);
+            if (!newDirection) return prev;
 
-        socket.emit("selected_cells", { roomId, selectedCells: [...selectedCells, index] });
-        setSelectedCells((prev) =>
-            prev.includes(index) ? prev : [...prev, index]
-        );
+            // second cell → lock direction
+            if (prev.length === 1) {
+                setDirection(newDirection);
+                socket.emit("selected_cells", {
+                    roomId,
+                    selectedCells: [...prev, index],
+                });
+                return [...prev, index];
+            }
+
+            // must follow locked direction
+            if (newDirection !== direction) return prev;
+
+            socket.emit("selected_cells", {
+                roomId,
+                selectedCells: [...prev, index],
+            });
+
+            return [...prev, index];
+        });
     };
+
 
 
 
@@ -295,34 +313,34 @@ const HomePage = () => {
                                 /* ✅ desktop navigation only */
                                 onKeyDown={(e) => handleKeyDown(e, index)}
 
-                                onClick={() => handleCellSelect(index)}
-                                onTouchStart={() => handleCellSelect(index)}
+                                onTouchStart={(e) => handleCellSelect(index, e)}
+                                onClick={(e) => handleCellSelect(index, e)}
+
 
                                 maxLength={1}
                                 inputMode="text"
                                 autoComplete="off"
                                 autoCorrect="off"
                                 autoCapitalize="characters"
-
                                 className={`
-    border-4 border-white dark:border-slate-700
-    shadow-lg
-    w-10 h-10 sm:w-12 sm:h-12
-    rounded-lg
-    text-center text-xl font-bold
-    transition-all duration-150
+                                    border-4 border-white dark:border-slate-700
+                                    shadow-lg
+                                    w-10 h-10 sm:w-12 sm:h-12
+                                    rounded-lg
+                                    text-center text-xl font-bold
+                                    transition-all duration-150
 
-    ${cell
+                                    ${cell
                                         ? cell.playerNo === 1
                                             ? "bg-yellow-300 dark:bg-yellow-500"
                                             : "bg-teal-300 dark:bg-teal-500"
                                         : "bg-white dark:bg-slate-900"}
 
-    ${selectedCells.includes(index) ? "ring-4 ring-red-500" : ""}
-    text-black dark:text-white
-    ${isPlayerTurn ? "cursor-pointer" : "cursor-not-allowed"}
-    focus:outline-none
-  `}
+                                        ${selectedCells.includes(index) ? "ring-4 ring-red-500" : ""}
+                                        text-black dark:text-white
+                                        ${isPlayerTurn ? "cursor-pointer" : "cursor-alias"}
+                                        focus:outline-none
+                                    `}
                             />
 
                         ))}

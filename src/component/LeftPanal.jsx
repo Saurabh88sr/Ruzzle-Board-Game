@@ -166,24 +166,26 @@ const LeftPanel = () => {
         {/* 👥 ONLINE PLAYERS */}
         {!roomId && (
           <>
-            <h3 className="text-xl font-bold tracking-wide text-green-500 dark:text-green-400">
-              🟢 Players Online
+            <h3 className="text-xl font-bold tracking-wide text-green-700 dark:text-green-400">
+              🟢 Select a Players Online
             </h3>
 
             {playersOnline.map((p) => (
-              <div
+              <button
                 key={p.socketId}
                 onClick={() => createRoom(p.socketId)}
                 className="
-                  bg-white text-black border border-slate-200
+                  bg-white text-black border border-slate-200 w-full
                   p-2 rounded-lg cursor-pointer
                   hover:bg-slate-100 transition-all shadow-md
                   dark:bg-slate-800 dark:text-white
                   dark:border-slate-700 dark:hover:bg-slate-700
+                  focus:outline-none focus:ring-2 focus:ring-blue-500
+                  active:scale-95
                 "
               >
                 🎮 {p.name}
-              </div>
+              </button>
             ))}
           </>
         )}
@@ -235,12 +237,12 @@ const LeftPanel = () => {
               <div
                 className="
                   bg-white border border-slate-300
-                  p-3 mt-2 rounded-xl max-h-64 overflow-auto space-y-2
+                  p-3 mt-2 rounded-xl max-h-screen-64 overflow-auto space-y-2
 
                   dark:bg-slate-900 dark:border-slate-700
                 "
               >
-                {moves.map((move, index) => (
+                {moves.slice().reverse().map((move, index) => (
                   <div
                     key={index}
                     className="
