@@ -10,7 +10,7 @@ const App = () => {
     <>
       <Router>
         <Routes>
-          <Route path="/ruzzle" element={<LandingPage />} />
+          <Route path="/home" element={<LandingPage />} />
           <Route path="/" element={<AppPage />} />
         </Routes>
       </Router>
