@@ -55,28 +55,46 @@ const HomePage = () => {
     const handleKeyDown = (e, index) => {
         if (!isPlayerTurn) return;
 
-        const key = e.key.toUpperCase();
+        if (e.key === "Backspace") {
+            socket.emit("make_move", {
+                roomId,
+                index,
+                value: "",
+            });
 
-        // allow only A-Z
-        if (!/^[A-Z]$/.test(key)) return;
+            setTimeout(() => {
+                inputRefs.current[index - 1]?.focus();
+            }, 0);
+        }
+
+        if (e.key === "ArrowRight") {
+            inputRefs.current[index + 1]?.focus();
+        }
+
+        if (e.key === "ArrowLeft") {
+            inputRefs.current[index - 1]?.focus();
+        }
+    };
+
+    const handleInput = (e, index) => {
+        if (!isPlayerTurn) return;
+
+        const value = e.target.value.toUpperCase();
+
+        // allow empty or A–Z
+        if (!/^[A-Z]?$/.test(value)) return;
 
         // prevent overwrite
         if (boardData[index]) return;
 
+        // 🔥 emit socket here (NOT in keydown)
         socket.emit("make_move", {
             roomId,
             index,
-            value: key,
+            value,
         });
-    };
-    const handleInput = (e, index) => {
-        const value = e.target.value.toUpperCase();
 
-        if (!/^[A-Z]?$/.test(value)) return;
-
-        updateCellValue(index, value);
-
-        // move to next cell (mobile safe)
+        // mobile-safe focus move
         setTimeout(() => {
             inputRefs.current[index + 1]?.focus();
         }, 0);
@@ -105,7 +123,8 @@ const HomePage = () => {
         if (!boardData[index]) return;
         if (isPlayerTurn) return;
 
-
+         inputRefs.current[index]?.focus();
+         
         const current = getRowCol(index);
 
         // first cell
@@ -267,33 +286,45 @@ const HomePage = () => {
                                 key={index}
                                 ref={(el) => (inputRefs.current[index] = el)}
                                 type="text"
-                                value={cell?.value || ""}
-                                onChange={(e) => handleInput(e, index)}
-                                onKeyDown={(e) => handleKeyDown(e, index)}
-                                onClick={() => handleCellSelect(index)}
-                                className={`
-                                    border-4 border-white dark:border-slate-700
-                                    shadow-lg
-                                     sm:w-12 sm:h-12
-                                    rounded-lg
-                                    text-center text-xl font-bold
-                                    transition-all duration-150
 
-                                    ${cell
+                                value={cell?.value || ""}
+
+                                /* ✅ mobile input */
+                                onChange={(e) => handleInput(e, index)}
+
+                                /* ✅ desktop navigation only */
+                                onKeyDown={(e) => handleKeyDown(e, index)}
+
+                                onClick={() => handleCellSelect(index)}
+                                onTouchStart={() => handleCellSelect(index)}
+
+                                maxLength={1}
+                                inputMode="text"
+                                autoComplete="off"
+                                autoCorrect="off"
+                                autoCapitalize="characters"
+
+                                className={`
+    border-4 border-white dark:border-slate-700
+    shadow-lg
+    w-10 h-10 sm:w-12 sm:h-12
+    rounded-lg
+    text-center text-xl font-bold
+    transition-all duration-150
+
+    ${cell
                                         ? cell.playerNo === 1
                                             ? "bg-yellow-300 dark:bg-yellow-500"
                                             : "bg-teal-300 dark:bg-teal-500"
                                         : "bg-white dark:bg-slate-900"}
 
-                                    ${selectedCells.includes(index)
-                                        ? "ring-4 ring-red-500"
-                                        : ""}
-                                    
-                                    text-black dark:text-white
-                                    ${isPlayerTurn ? "cursor-pointer" : "cursor-auto"}
-                                    focus:outline-none
-                                `}
+    ${selectedCells.includes(index) ? "ring-4 ring-red-500" : ""}
+    text-black dark:text-white
+    ${isPlayerTurn ? "cursor-pointer" : "cursor-not-allowed"}
+    focus:outline-none
+  `}
                             />
+
                         ))}
                     </div>
                 </div>
