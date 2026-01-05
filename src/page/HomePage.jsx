@@ -257,7 +257,7 @@ const HomePage = () => {
                                 ref={(el) => (inputRefs.current[index] = el)}
                                 type="text"
                                 value={cell?.value || ""}
-                                readOnly
+                                
                                 onKeyDown={(e) => handleKeyDown(e, index)}
                                 onClick={() => handleCellSelect(index)}
                                 className={`
