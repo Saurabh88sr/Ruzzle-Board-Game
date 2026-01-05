@@ -325,7 +325,7 @@ const HomePage = () => {
                                 className={`
                                     border-4 border-white dark:border-slate-700
                                     shadow-lg
-                                    w-10 h-10 sm:w-12 sm:h-12
+                                    w-8 h-8 sm:w-12 sm:h-12
                                     rounded-lg
                                     text-center text-xl font-bold
                                     transition-all duration-150
