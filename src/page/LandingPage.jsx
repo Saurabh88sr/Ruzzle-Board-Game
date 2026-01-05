@@ -36,7 +36,7 @@ const LandingPage = () => {
         <div className="hidden md:flex items-center gap-8 text-slate-300 font-medium">
           {/* <a href="#how-to-play" className="hover:text-indigo-400 transition-colors">How to Play</a> */}
           <a href="#rules" className="hover:text-indigo-400 transition-colors">Rules</a>
-          <Link to="/ruzzle">
+          <Link to="/">
             <button className="bg-white text-slate-900 px-6 py-2 rounded-full font-bold hover:bg-indigo-50 transition-all active:scale-95">
               Play Now
             </button>
@@ -71,7 +71,7 @@ const LandingPage = () => {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <Link to="/ruzzle">
+          <Link to="/">
             <button className="bg-indigo-600 text-white px-8 py-4 rounded-xl font-bold text-lg flex items-center justify-center gap-2 hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-600/20 active:scale-95">
               Play Online Now <ArrowRight className="w-5 h-5" />
             </button>

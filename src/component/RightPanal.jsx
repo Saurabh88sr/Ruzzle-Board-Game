@@ -84,7 +84,7 @@ const RightPanal = ({ playername }) => {
     >
 
       <div className="flex justify-between items-center mb-4">
-        <Link to="/">
+        <Link to="/home">
           <div className="flex items-center gap-2">
             <div className="bg-indigo-600 p-2 rounded-lg">
 
