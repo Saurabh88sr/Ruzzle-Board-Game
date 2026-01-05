@@ -147,54 +147,71 @@ const RightPanal = ({ playername }) => {
         </div>
       </div>
 
-      {rules && (
-        <div className="bg-linear-to-br from-slate-900 to-slate-800 
-                  text-slate-200 p-4 rounded-2xl text-sm 
+   {rules && (
+  <div className="bg-linear-to-br from-slate-900 to-slate-800
+                  text-slate-200 p-4 rounded-2xl text-sm
                   border border-slate-700 shadow-lg max-w-md">
 
-          <h3 className="text-lg font-bold text-white text-center mb-3">
-            🎮 Game Rules
-          </h3>
+    <h3 className="text-lg font-bold text-white text-center mb-4">
+      🎮 How to Play
+    </h3>
 
-          {/* Direction Rule */}
-          <div className="bg-slate-700/50 rounded-xl p-3 mb-3">
-            <h4 className="font-semibold text-indigo-400 mb-1">
-              🔀 Selection Direction
-            </h4>
-            <p>
-              Select letters in <strong>one continuous direction</strong> only.
-              Once you choose a direction, you cannot change it mid-selection.
-            </p>
-            <p className="mt-1 text-slate-300 text-xs">
-              ⬆️ ⬇️ ⬅️ ➡️ ↖️ ↗️ ↘️ ↙️
-            </p>
-          </div>
+    {/* Main Turn Rule */}
+    <div className="bg-indigo-600/20 border border-indigo-500/40
+                    rounded-xl p-3 mb-4">
+      <h4 className="font-semibold text-indigo-300 mb-2">
+        🔄 Turn Flow (Very Important)
+      </h4>
 
-          {/* Turn Rule */}
-          <div className="bg-slate-700/50 rounded-xl p-3 mb-3">
-            <h4 className="font-semibold text-indigo-400 mb-1">
-              ⏳ Turn Based
-            </h4>
-            <p>
-              You can create a word <strong>only on Opponent turn</strong> after you fill the selected cell.
-            </p>
-          </div>
+      <ol className="list-decimal list-inside space-y-1 text-slate-100">
+        <li>
+          <strong>Your Turn:</strong> Fill <strong>one empty box</strong> with a letter.
+        </li>
+        <li>
+          <strong>Opponent’s Turn:</strong> Select letters on the board to
+          <strong> create a word</strong>.
+        </li>
+        <li>
+          After selecting letters, click <strong>“Spell”</strong> to submit the word.
+        </li>
+      </ol>
 
-          {/* Scoring Rule */}
-          <div className="bg-slate-700/50 rounded-xl p-3">
-            <h4 className="font-semibold text-indigo-400 mb-1">
-              🏆 Score Calculation
-            </h4>
-            <p>
-              Each letter = <strong>1 point</strong>
-            </p>
-            <p className="text-xs text-slate-300">
-              Invalid words give 0 points
-            </p>
-          </div>
+      <p className="mt-2 text-xs text-slate-300">
+        ⚠️ You <strong>cannot</strong> create words on your own turn.
+      </p>
+    </div>
 
-        </div>
-      )}
+    {/* Direction Rule */}
+    <div className="bg-slate-700/50 rounded-xl p-3 mb-3">
+      <h4 className="font-semibold text-indigo-400 mb-1">
+        🔀 Letter Selection Rule
+      </h4>
+      <p>
+        Letters must be selected in <strong>one continuous direction</strong>.
+        Once a direction is chosen, it <strong>cannot be changed</strong>.
+      </p>
+      <p className="mt-1 text-slate-300 text-xs">
+        Allowed directions: ⬆️ ⬇️ ⬅️ ➡️ ↖️ ↗️ ↘️ ↙️
+      </p>
+    </div>
+
+    {/* Scoring Rule */}
+    <div className="bg-slate-700/50 rounded-xl p-3">
+      <h4 className="font-semibold text-indigo-400 mb-1">
+        🏆 Scoring
+      </h4>
+      <p>
+        Each letter = <strong>1 point</strong>
+      </p>
+      <p className="text-xs text-slate-300">
+        Invalid words score <strong>0 points</strong>
+      </p>
+    </div>
+
+  </div>
+)}
+
+
 
     </div>
 
